@@ -1,0 +1,25 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "C:\\Users\\cosmi\\AppData\\Local\\Arduino15\\packages\\esp32\\tools\\**",
+                "C:\\Users\\cosmi\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\1.0.0\\**",
+                "C:\\Users\\cosmi\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\1.0.0\\tools\\sdk\\include\\**",
+                "C:/Users/cosmi/AppData/Local/Arduino15/packages/esp32/hardware/esp32/1.0.0/libraries/SPIFFS/src",
+                "C:/Users/cosmi/AppData/Local/Arduino15/packages/esp32/hardware/esp32/1.0.0/libraries/FS/src",
+                "C:\\Users\\cosmi\\Documents\\Arduino\\libraries\\BMP180_Breakout_Arduino_Library",
+                "C:/Users/cosmi/AppData/Local/Arduino15/packages/esp32/hardware/esp32/1.0.0/cores/esp32",
+                "C:/Users/cosmi/AppData/Local/Arduino15/packages/esp32/hardware/esp32/1.0.0/libraries/WiFi/src",
+                "C:/Users/cosmi/AppData/Local/Arduino15/packages/esp32/hardware/esp32/1.0.0/tools/sdk/include/freertos/freertos",
+                "C:/Users/cosmi/Documents/Arduino/libraries/WebSockets/src"
+            ],
+            "forcedInclude": [],
+            "intelliSenseMode": "msvc-x64",
+            "compilerPath": "C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.16.27023/bin/Hostx64/x64/cl.exe",
+            "cStandard": "c11",
+            "cppStandard": "c++17"
+        }
+    ],
+    "version": 4
+}
