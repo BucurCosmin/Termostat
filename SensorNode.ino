@@ -150,6 +150,7 @@ void SocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length)
                 server1.sendTXT(num,TempString);
                 break;
                 case '2':
+                Serial.println("interogation 2 received");
                 xSemaphoreTake(xMutex,portMAX_DELAY);
                 taskYIELD();
                 logsize= ReadFileW(SPIFFS,"/log.txt",logfile);
