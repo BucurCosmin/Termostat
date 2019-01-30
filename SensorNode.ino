@@ -33,11 +33,14 @@ double setpointTemp;
 char setpointWeb[6];
 char Thermostat_activated;
 char activated[1];
-
+int StartSignal=23;
+bool Started;
 void setup()
 {
+    Serial.begin(115200);
+    pinMode(StartSignal,OUTPUT);
+    Started=false;
     xMutex=xSemaphoreCreateBinary();
-    //vTaskStartScheduler();
     InitializeController();
     configTime(gmtOffset_sec,daylightOffset_sec,ntpServer);
     getLocalTime(&timeinfo);
@@ -54,6 +57,19 @@ void setup()
 
 void loop()
 {
+        if ((Thermostat_activated)=='1' && T<setpointTemp)
+        {
+            digitalWrite(StartSignal,HIGH);
+            Started=true;
+        }
+        if ((T>setpointTemp+0.5) || Thermostat_activated)=='0')
+        {
+            digitalWrite(StartSignal,LOW);
+            Serial.println("stopped!!!!!!!!!!!!!");
+            Started=false;
+        }
+        delay(1000);
+
 }
 
 void taskAcq(void* param)
@@ -63,9 +79,6 @@ void taskAcq(void* param)
         ReadBMPSensor(sensor,&T,&P);
         configTime(gmtOffset_sec,daylightOffset_sec,ntpServer);
         getLocalTime(&timeinfo);
-
-        xSemaphoreTake(xMutex,0);
-        taskYIELD();
         int sec=timeinfo.tm_sec;
         char numberstring[(((sizeof sec) * CHAR_BIT) + 2)/3 + 2];
         sprintf(numberstring, "%d", sec);
@@ -80,15 +93,16 @@ void taskAcq(void* param)
         sprintf(numberstring2, "%d", hour);
         strcat(timestamp," ");
         strcat(timestamp,numberstring2);
-        //logsize= ReadFileW(SPIFFS,"/log.txt",logfile);
         if (abs(T-oldTemp)>0.5)
         {
+            xSemaphoreTake(xMutex,0);
+            taskYIELD();
             WriteValue(SPIFFS,String(T,2),timestamp,"/log.txt");
             oldTemp=T;
+            xSemaphoreGive(xMutex);
+            taskYIELD();
         }
-        //ReadFile(SPIFFS,"/log.txt");
-        xSemaphoreGive(xMutex);
-        taskYIELD();
+
         strcpy (timestamp, "");
         delay(1000);
     }
@@ -112,9 +126,6 @@ void keepTime(void* param)
             }
         }
     }
-
-    //configTime(gmtOffset_sec,daylightOffset_sec,ntpServer);
-   // getLocalTime(&timeinfo);
 }
 
 void SocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length)
@@ -159,6 +170,7 @@ void SocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length)
                 taskYIELD();
                 break;
                 case '3':
+                Serial.println("interogation 3 received");
                 deleteLOG(SPIFFS,"/log.txt");
                 break;
                 case '4':
@@ -166,6 +178,7 @@ void SocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length)
                 server1.sendTXT(num,"4 "+String(settings));
                 break;
                 case '5':
+                Serial.println("interogation 5 received");
                 TempString="5 "+String(GetLogSize(SPIFFS,"/log.txt"));
                 server1.sendTXT(num,TempString);
                 break;
